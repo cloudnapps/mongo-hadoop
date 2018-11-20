@@ -103,6 +103,7 @@ public class MongoRecordReader implements RecordReader<BSONWritable, BSONWritabl
                 return false;
             }
 
+			Thread.sleep(150);
             DBObject next = cursor.next();
             this.currentVal.setDoc(next);
             this.currentKey.setDoc(new BasicBSONObject("_id", next.get("_id")));
@@ -111,8 +112,10 @@ public class MongoRecordReader implements RecordReader<BSONWritable, BSONWritabl
             return true;
         } catch (MongoException e) {
             throw new IOException("Couldn't get next key/value from mongodb: ", e);
-        }
-    }
+        } catch (InterruptedException e) {
+			throw new IOException("sleep error ", e);
+		}
+	}
 
     public boolean next(final BSONWritable key, final BSONWritable value) throws IOException {
         if (nextKeyValue()) {

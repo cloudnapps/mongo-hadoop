@@ -112,6 +112,8 @@ public class MongoOutputCommitter extends OutputCommitter {
 
         int maxDocs = MongoConfigUtil.getBatchSize(
           taskContext.getConfiguration());
+
+		maxDocs = 50;
         int curBatchSize = 0;
 
         BulkWriteOperation bulkOp;
@@ -169,7 +171,14 @@ public class MongoOutputCommitter extends OutputCommitter {
                         LOG.error("Could not write to MongoDB", e);
                         throw e;
                     }
-                    bulkOp = collection.initializeOrderedBulkOperation();
+
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					bulkOp = collection.initializeOrderedBulkOperation();
                     curBatchSize = 0;
 
                     // Signal progress back to Hadoop framework so that we

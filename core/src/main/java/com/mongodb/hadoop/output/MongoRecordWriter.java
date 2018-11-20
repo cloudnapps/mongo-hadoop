@@ -91,6 +91,13 @@ public class MongoRecordWriter<K, V> extends RecordWriter<K, V> {
     public void write(final K key, final V value) throws IOException {
         if (value instanceof MongoUpdateWritable) {
             outputStream.writeInt(MongoWritableTypes.MONGO_UPDATE_WRITABLE);
+
+            try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
             ((MongoUpdateWritable) value).write(outputStream);
         } else {
             DBObject o = new BasicDBObject();
